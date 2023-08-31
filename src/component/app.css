@@ -1,0 +1,43 @@
+.game {
+  display: flex;
+  justify-content: center;
+  width:100%;
+  margin-top: 30px;
+}
+
+.choseGendar {
+  width:200px;
+  display: flex;
+  justify-content: center;
+}
+.choseGendar button {
+  margin-right: 10px;
+  font-size: 16px;
+  border:0;
+  padding:10px 15px;
+  background-color: #111111;
+  color:#fff;
+  border-radius: 5px;
+}
+.button1  {
+  width:300px;
+}
+.button1 h1{
+  font-size: 30px;
+    margin-bottom: 20px;  
+}
+.cBtn {
+  display: flex;
+}
+.cBtn button{
+  margin-right: 10px;
+  font-size: 16px;
+  border:0;
+  padding:10px 15px;
+  background-color: #111111;
+  color:#fff;
+  border-radius: 5px;
+}
+.buttonHover {
+  position: relative;
+}
