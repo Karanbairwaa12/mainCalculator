@@ -4,10 +4,36 @@ const Home = () => {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
 
-  const handleButtonClick = (value) => {
+  const handleButtonClick = (value,value2) => {
     if (value === '=') {
       try {
-        const result = eval(input);
+      console.log(input)
+      let inputToEvaluate = input.replace(/^[+*/%]*0*/, '').replace(/[+*/%]+$/, '');
+        console.log(inputToEvaluate)
+        const parts = inputToEvaluate.split(/([+\-*/%])/);
+      console.log(parts)
+      const processedParts = [];
+      
+      for (let i = 0; i < parts.length; i++) {
+        const part = parts[i];
+        if (i % 2 === 0) {
+          // Process numeric parts (even indices)
+          const numericPart = Number(part);
+          if (!isNaN(numericPart)) {
+            processedParts.push(numericPart.toString());
+            // console.log(processedParts)
+          }
+        } else {
+          // Process operator parts (odd indices)
+          processedParts.push(part);
+          // console.log(processedParts)
+        }
+      }
+      
+      // Join the processed parts back together
+      const newJointString = processedParts.join('');
+        console.log(newJointString)
+        const result = eval(newJointString);
         setInput(result.toString()); 
         setOutput(result);
       } catch (error) {
@@ -22,11 +48,25 @@ const Home = () => {
       setInput(input.slice(0, -1)); 
     }
     else{
-      
-        setInput(input + value); // Append value to input
-      
+      if (input === '' && (value === '*' || value === '/')) {
+        // Prevent '*' or '/' as the first character
+        return;
+      }
+      if (isOperator(value)) {
+        // Check if the last character is an operator, and prevent adding another operator
+        if (isOperator(input.charAt(input.length - 1))) {
+          return;
+        }
+      }
+        setInput(prevInput => prevInput + value); 
       
     }
+  };
+  
+  const isOperator= (char) => {
+    const operators = ['+', '-', '*', '/', '%'];
+    console.log(operators.includes(char));
+    return operators.includes(char)
   };
 
   const handleKeyDown = (event) => {
@@ -45,9 +85,29 @@ const Home = () => {
       handleButtonClick('<-'); // Simulate <- button click on Backspace
     
     }
+    if (keyPressed === 'Escape') {
+      // Clear the input when the Escape key is pressed
+      setInput('');
+      return;
+    }
+    if (input === '' && (keyPressed === '*' || keyPressed === '/')) {
+      // Prevent '*' or '/' as the first character
+      return;
+    }
     if (validKeys.includes(keyPressed)) {
       event.preventDefault(); // Prevent default key behavior
-      
+      // if (isOperator(keyPressed)) {
+      //   // Check if the last character is an operator, and prevent adding another operator
+      //   if (isOperator(input.charAt(input.length - 1))) {
+      //     return;
+      //   }
+      // }
+      if (isOperator(keyPressed)) {
+        // Check if the last character is an operator, and prevent adding another operator
+        if (isOperator(input.charAt(input.length - 1))) {
+          return;
+        }
+      }
         setInput(prevInput => prevInput + keyPressed); // Simulate button click for valid keys
     }
   };
@@ -64,7 +124,7 @@ const Home = () => {
           <div className='container'>
             <div className='inputForm'>
               
-                <input className="input" type="text" value={input} readOnly />
+                <input className="input" type="text" value={input}/>
               
             </div>
             <div className="Buttons">
@@ -89,9 +149,11 @@ const Home = () => {
               <button onClick={() => handleButtonClick('+')}>+</button>
             
               <button onClick={() => handleButtonClick('0')}>0</button>
+              <button onClick={()=> handleButtonClick('00')}>00</button>
               <button onClick={() => handleButtonClick('.')}>.</button>
               {/* <button onClick={() => handleButtonClick('(')}>(</button>
               <button onClick={() => handleButtonClick(')')}>)</button> */}
+              
               <button onClick={() => handleButtonClick('<-')}>x</button>
               
             </div>
